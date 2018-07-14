@@ -6,9 +6,10 @@
 FROM openjdk:8
 LABEL maintainer="Victor Romero <victor.romero@gmail.com>"
 
-ARG ACTIVEMQ_ARTEMIS_VERSION
+#ARG ACTIVEMQ_ARTEMIS_VERSION
 ENV JMX_EXPORTER_VERSION=0.3.1
 ENV JGROUPS_KUBERNETES_VERSION=0.9.3
+ENV ACTIVEMQ_ARTEMIS_VERSION=2.6.2
 
 RUN apt-get -qq -o=Dpkg::Use-Pty=0 update && \
   apt-get -qq -o=Dpkg::Use-Pty=0 install -y --no-install-recommends \
