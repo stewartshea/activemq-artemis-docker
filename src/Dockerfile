@@ -3,7 +3,7 @@
 ##########################################################
 ## Build Image                                           #
 ##########################################################
-FROM openjdk:8 as builder
+FROM openjdk:8
 LABEL maintainer="Victor Romero <victor.romero@gmail.com>"
 
 ARG ACTIVEMQ_ARTEMIS_VERSION
@@ -90,13 +90,13 @@ RUN wget "https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaag
   ln -s "/opt/jmx-exporter/jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar" "/opt/jmx-exporter/jmx_prometheus_javaagent.jar"
 COPY assets/jmx-exporter-config.yaml /opt/jmx-exporter
 
-##########################################################
-## Run Image                                             #
-##########################################################
-FROM openjdk:8
-LABEL maintainer="Victor Romero <victor.romero@gmail.com>"
-ARG ACTIVEMQ_ARTEMIS_VERSION
-ENV ACTIVEMQ_ARTEMIS_VERSION=$ACTIVEMQ_ARTEMIS_VERSION
+# ##########################################################
+# ## Run Image                                             #
+# ##########################################################
+# FROM openjdk:8
+# LABEL maintainer="Victor Romero <victor.romero@gmail.com>"
+# ARG ACTIVEMQ_ARTEMIS_VERSION
+# ENV ACTIVEMQ_ARTEMIS_VERSION=$ACTIVEMQ_ARTEMIS_VERSION
 
 # add user and group for artemis
 RUN groupadd -g 1000 -r artemis && useradd -r -u 1000 -g artemis artemis
@@ -109,13 +109,14 @@ RUN apt-get -qq -o=Dpkg::Use-Pty=0 update && \
     dumb-init=1.2.0-1 && \
   rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}" "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}"
-COPY --from=builder "/var/lib/artemis" "/var/lib/artemis"
-COPY --from=builder "/opt/jmx-exporter" "/opt/jmx-exporter"
-COPY --from=builder "/opt/jgroupskubernetes/*" "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}/lib/" 
+# COPY --from=builder "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}" "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}"
+# COPY --from=builder "/var/lib/artemis" "/var/lib/artemis"
+# COPY --from=builder "/opt/jmx-exporter" "/opt/jmx-exporter"
+# COPY --from=builder "/opt/jgroupskubernetes/*" "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}/lib/" 
+RUN cp "/opt/jgroupskubernetes/*" "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}/lib/"
 
-# To enable RESTORE_CONFIGURATION
-COPY --from=builder "/var/lib/artemis/etc" "/var/lib/artemis/etc-backup"
+# # To enable RESTORE_CONFIGURATION
+# COPY --from=builder "/var/lib/artemis/etc" "/var/lib/artemis/etc-backup"
 
 RUN ln -s "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}" /opt/apache-artemis && chmod 755 /opt/apache-artemis
 RUN chown -R artemis.artemis /var/lib/artemis
