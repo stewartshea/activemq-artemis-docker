@@ -114,7 +114,7 @@ RUN apt-get -qq -o=Dpkg::Use-Pty=0 update && \
 # COPY --from=builder "/var/lib/artemis" "/var/lib/artemis"
 # COPY --from=builder "/opt/jmx-exporter" "/opt/jmx-exporter"
 # COPY --from=builder "/opt/jgroupskubernetes/*" "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}/lib/" 
-RUN cp "/opt/jgroupskubernetes/*" "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}/lib/"
+RUN cp -R "/opt/jgroupskubernetes/*" "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}/lib/"
 
 # # To enable RESTORE_CONFIGURATION
 # COPY --from=builder "/var/lib/artemis/etc" "/var/lib/artemis/etc-backup"
