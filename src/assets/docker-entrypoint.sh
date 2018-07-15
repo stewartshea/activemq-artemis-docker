@@ -15,7 +15,7 @@ if [ "$RESTORE_CONFIGURATION" ] && [ -z "$(ls -A ${CONFIG_PATH})" ]; then
 fi
 
 # Swapvars
-./swapvars.sh
+/bin/sh -c /swapvars.sh
 
 # Never use in a production environment
 if [ "$DISABLE_SECURITY" ]; then
