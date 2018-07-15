@@ -16,6 +16,7 @@ fi
 
 # Swapvars
 sed -i "s/\${BROKER_IP}/$BROKER_IP/g" $CONFIG_PATH/broker.xml
+sed -i "s/\${AMQ_NAME}/$HOSTNAME/g" $CONFIG_PATH/broker.xml
 
 # Never use in a production environment
 if [ "$DISABLE_SECURITY" ]; then
