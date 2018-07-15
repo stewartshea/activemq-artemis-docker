@@ -15,7 +15,7 @@ if [ "$RESTORE_CONFIGURATION" ] && [ -z "$(ls -A ${CONFIG_PATH})" ]; then
 fi
 
 # Swapvars
-/bin/sh -c /swapvars.sh
+sed -i "s/\${BROKER_IP}/$BROKER_IP/g" $CONFIG_PATH/etc/broker.xml
 
 # Never use in a production environment
 if [ "$DISABLE_SECURITY" ]; then
