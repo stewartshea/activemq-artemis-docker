@@ -1,41 +1,48 @@
-#!/bin/bash
+#!/bin/sh
 set -e
-INSTANCE_DIR=/var/lib/artemis
-DISABLER_TAG="<!-- Remove this tag to enable custom configuration -->"
+INSTANCE_DIR=/var/lib/artemis/
+sed -i "s/\${BROKER_IP}/$BROKER_IP/g" $INSTANCE_DIR/etc/broker.xml
 
-declare -a CONFIG_FILES=("broker.xml" "logging.properties")
+#################################
+##### Used for reference from RH AMQ 7.1
+#################################
 
-function swapVars() { 
-  sed -i "s/\${BROKER_IP}/$BROKER_IP/g" $1
-  sed -i "s/\${AMQ_NAME}/$AMQ_NAME/g" $1
-  sed -i "s/\${AMQ_ROLE}/$AMQ_ROLE/g" $1
-  sed -i "s/\${AMQ_STORAGE_USAGE_LIMIT}/$AMQ_STORAGE_USAGE_LIMIT/g" $1
-}
+# INSTANCE_DIR=$1
+# DISABLER_TAG="<!-- Remove this tag to enable custom configuration -->"
 
-for config_file in ${CONFIG_FILES[@]};
-do
+# declare -a CONFIG_FILES=("BROKER_XML" "LOGGING_PROPERTIES")
+
+# function swapVars() { 
+#   sed -i "s/\${BROKER_IP}/$BROKER_IP/g" $1
+#   sed -i "s/\${AMQ_NAME}/$AMQ_NAME/g" $1
+#   sed -i "s/\${AMQ_ROLE}/$AMQ_ROLE/g" $1
+#   sed -i "s/\${AMQ_STORAGE_USAGE_LIMIT}/$AMQ_STORAGE_USAGE_LIMIT/g" $1
+# }
+
+# for config_file in ${CONFIG_FILES[@]};
+# do
   
-  file_text="${!config_file}"
-  file_text=$(echo "$file_text" | sed  "/^$/d") # Remove empty lines
+#   file_text="${!config_file}"
+#   file_text=$(echo "$file_text" | sed  "/^$/d") # Remove empty lines
 
-  # Format env var into filename 
-  fname=$(echo "$config_file" | tr '[:upper:]' '[:lower:]' | sed -e 's/_/./g')
+#   # Format env var into filename 
+#   fname=$(echo "$config_file" | tr '[:upper:]' '[:lower:]' | sed -e 's/_/./g')
 
-  #If file_text has disabler tag or is an empty/whitspace string 
-  if echo "$file_text" | grep -q "$DISABLER_TAG" || [[ -z "${file_text// }" ]]; then  
+#   #If file_text has disabler tag or is an empty/whitspace string 
+#   if echo "$file_text" | grep -q "$DISABLER_TAG" || [[ -z "${file_text// }" ]]; then  
      
-    echo "Custom Configuration file '$config_file' is disabled"
+#     echo "Custom Configuration file '$config_file' is disabled"
 
-  else
+#   else
    
-    echo "Custom Configuration file '$config_file' is enabled"
+#     echo "Custom Configuration file '$config_file' is enabled"
     
-    # Overwrite default configuration file
-    echo "$file_text" > $INSTANCE_DIR/etc/$fname
+#     # Overwrite default configuration file
+#     echo "$file_text" > $INSTANCE_DIR/etc/$fname
 
-  fi
+#   fi
 
-    # Swap env vars into configuration file
-    swapVars $INSTANCE_DIR/etc/$fname
+#     # Swap env vars into configuration file
+#     swapVars $INSTANCE_DIR/etc/$fname
 
-done
+# done
