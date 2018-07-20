@@ -122,9 +122,10 @@ RUN cp /opt/jgroupskubernetes/* /opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}/
 RUN ln -s "/opt/apache-artemis-${ACTIVEMQ_ARTEMIS_VERSION}" /opt/apache-artemis && chmod 755 /opt/apache-artemis
 RUN chown -R artemis.artemis /var/lib/artemis
 
-RUN mkdir -p /opt/assets
-COPY assets/merge.xslt /opt/assets
-COPY assets/enable-jmx.xml /opt/assets
+# RUN mkdir -p /opt/assets
+# COPY assets/merge.xslt /opt/assets
+# COPY assets/enable-jmx.xml /opt/assets
+ADD assets /opt/assets
 
 # Web Server
 EXPOSE 8161
