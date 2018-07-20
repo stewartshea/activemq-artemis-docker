@@ -1,0 +1,94 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  labels:
+    appplication: amq-master-statefulset
+  name: amq-master-statefulset
+  namespace: amq71-i
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: amq-master-statefulset
+  serviceName: ''
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: amq-master-statefulset
+        application: amq-master-statefulset
+        deploymentConfig: amq-master-statefulset
+      name: amq-master-statefulset
+    spec:
+      containers:
+        - env:
+            - name: DISABLE_SECURITY
+              value: 'true'
+            - name: BROKER_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+          image: >-
+            docker-registry.default.svc:5000/amq71-i/activemq-artemis-docker:latest
+          imagePullPolicy: Always
+          name: broker
+          ports:
+            - containerPort: 1883
+              protocol: TCP
+            - containerPort: 61613
+              protocol: TCP
+            - containerPort: 8161
+              protocol: TCP
+            - containerPort: 9404
+              protocol: TCP
+            - containerPort: 61616
+              protocol: TCP
+            - containerPort: 5445
+              protocol: TCP
+            - containerPort: 5672
+              protocol: TCP
+            - containerPort: 8888
+              name: ping
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /var/lib/artemis/data
+              name: artemis-volume-1
+            - mountPath: /var/lib/artemis/etc-backup
+              name: artemis-volume-3
+            - mountPath: /var/lib/artemis/lock
+              name: artemis-volume-4
+            - mountPath: /var/lib/artemis/tmp
+              name: artemis-volume-5
+            - mountPath: /var/lib/artemis/etc
+              name: etc
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - emptyDir: {}
+          name: artemis-volume-1
+        - emptyDir: {}
+          name: artemis-volume-3
+        - emptyDir: {}
+          name: artemis-volume-4
+        - emptyDir: {}
+          name: artemis-volume-5
+        - configMap:
+            defaultMode: 511
+            name: configmap-master-broker
+          name: etc
+  updateStrategy:
+    type: OnDelete
