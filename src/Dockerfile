@@ -16,7 +16,7 @@ RUN apt-get -qq -o=Dpkg::Use-Pty=0 update && \
     libaio1=0.3.110-3 \
     xmlstarlet=1.6.1-2 \
     jq=1.5+dfsg-1.3 \
-    ca-certificates=20161130+nmu1 \
+    ca-certificates=20161130+nmu1+deb9u1 \
     wget=1.18-5+deb9u2 && \
   rm -rf /var/lib/apt/lists/*
 
